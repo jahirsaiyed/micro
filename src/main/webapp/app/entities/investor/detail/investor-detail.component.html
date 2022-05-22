@@ -1,0 +1,68 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="investor">
+      <h2 data-cy="investorDetailsHeading"><span jhiTranslate="microApp.investor.detail.title">Investor</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ investor.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.name">Name</span></dt>
+        <dd>
+          <span>{{ investor.name }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.description">Description</span></dt>
+        <dd>
+          <span>{{ investor.description }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.email">Email</span></dt>
+        <dd>
+          <span>{{ investor.email }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.gender">Gender</span></dt>
+        <dd>
+          <span jhiTranslate="{{ 'microApp.Gender.' + investor.gender }}">{{ investor.gender }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.phone">Phone</span></dt>
+        <dd>
+          <span>{{ investor.phone }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.addressLine1">Address Line 1</span></dt>
+        <dd>
+          <span>{{ investor.addressLine1 }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.addressLine2">Address Line 2</span></dt>
+        <dd>
+          <span>{{ investor.addressLine2 }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.city">City</span></dt>
+        <dd>
+          <span>{{ investor.city }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.country">Country</span></dt>
+        <dd>
+          <span>{{ investor.country }}</span>
+        </dd>
+        <dt><span jhiTranslate="microApp.investor.createdOn">Created On</span></dt>
+        <dd>
+          <span>{{ investor.createdOn | formatMediumDatetime }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/investor', investor.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+application {
+  config {
+	applicationType monolith
+    baseName micro
+    packageName com.finance.investment.micro
+    authenticationType jwt
+    prodDatabaseType mysql
+    buildTool gradle
+    clientFramework angularX
+	clientPackageManager npm
+	cacheProvider redis
+    enableTranslation true
+	serverPort 8123
+    nativeLanguage en
+    languages [en]
+  }
+  entities *
+}
+
+
+entity Investor {
+    name String required
+    description String
+    email String required
+	gender Gender required
+    phone String required
+    addressLine1 String required
+    addressLine2 String
+    city String required
+    country String required
+	createdOn Instant
+}
+
+enum Gender {
+    MALE, FEMALE, OTHER
+}
+
+entity Transaction {
+    amount BigDecimal required
+    createdOn Instant
+	type TransactionType
+}
+
+enum TransactionType {
+	DEPOSIT, WITHDRAWAL
+}
+
+enum ReportType {
+    DAILY,
+	WEEKLY,
+	MONTHLY,
+	YEARLY
+}
+
+entity Report {
+	type ReportType
+	balance BigDecimal
+	totalUnits BigDecimal
+	aum BigDecimal // Asset under management (total investments)
+	createdOn LocalDate
+}
+
+
+relationship OneToOne {
+    Transaction{user required} to Investor
+}
+
+service * with serviceClass
+paginate * with pagination

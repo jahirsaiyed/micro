@@ -1,0 +1,33 @@
+{
+  "microApp": {
+    "investor": {
+      "home": {
+        "title": "Investors",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Investor",
+        "createOrEditLabel": "Create or edit a Investor",
+        "notFound": "No Investors found"
+      },
+      "created": "A new Investor is created with identifier {{ param }}",
+      "updated": "A Investor is updated with identifier {{ param }}",
+      "deleted": "A Investor is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Investor {{ id }}?"
+      },
+      "detail": {
+        "title": "Investor"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "email": "Email",
+      "gender": "Gender",
+      "phone": "Phone",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "city": "City",
+      "country": "Country",
+      "createdOn": "Created On"
+    }
+  }
+}

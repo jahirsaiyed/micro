@@ -1,0 +1,37 @@
+{
+  "applications": ["micro"],
+  "changelogDate": "20220522134022",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "report",
+  "fields": [
+    {
+      "fieldName": "type",
+      "fieldType": "ReportType",
+      "fieldValues": "DAILY,WEEKLY,MONTHLY,YEARLY"
+    },
+    {
+      "fieldName": "balance",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "totalUnits",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "aum",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Report",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceClass"
+}

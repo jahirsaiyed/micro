@@ -1,0 +1,9 @@
+{
+  "microApp": {
+    "TransactionType": {
+      "null": "",
+      "DEPOSIT": "DEPOSIT",
+      "WITHDRAWAL": "WITHDRAWAL"
+    }
+  }
+}
