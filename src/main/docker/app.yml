@@ -36,3 +36,15 @@ services:
     # remove the "127.0.0.1:" prefix
     ports:
       - 127.0.0.1:6379:6379
+  adminer_container:
+    image: adminer:latest
+    environment:
+      ADMINER_DEFAULT_SERVER: micro-mysql
+    ports:
+      - "7777:8080"
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./data/redisinsight:/db
