@@ -33,5 +33,5 @@
   "pagination": "pagination",
   "readOnly": false,
   "relationships": [],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }
