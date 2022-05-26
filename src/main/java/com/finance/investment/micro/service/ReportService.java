@@ -1,80 +1,37 @@
 package com.finance.investment.micro.service;
 
-import com.finance.investment.micro.domain.Report;
-import com.finance.investment.micro.repository.ReportRepository;
 import com.finance.investment.micro.service.dto.ReportDTO;
-import com.finance.investment.micro.service.mapper.ReportMapper;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service Implementation for managing {@link Report}.
+ * Service Interface for managing {@link com.finance.investment.micro.domain.Report}.
  */
-@Service
-@Transactional
-public class ReportService {
-
-    private final Logger log = LoggerFactory.getLogger(ReportService.class);
-
-    private final ReportRepository reportRepository;
-
-    private final ReportMapper reportMapper;
-
-    public ReportService(ReportRepository reportRepository, ReportMapper reportMapper) {
-        this.reportRepository = reportRepository;
-        this.reportMapper = reportMapper;
-    }
-
+public interface ReportService {
     /**
      * Save a report.
      *
      * @param reportDTO the entity to save.
      * @return the persisted entity.
      */
-    public ReportDTO save(ReportDTO reportDTO) {
-        log.debug("Request to save Report : {}", reportDTO);
-        Report report = reportMapper.toEntity(reportDTO);
-        report = reportRepository.save(report);
-        return reportMapper.toDto(report);
-    }
+    ReportDTO save(ReportDTO reportDTO);
 
     /**
-     * Update a report.
+     * Updates a report.
      *
-     * @param reportDTO the entity to save.
+     * @param reportDTO the entity to update.
      * @return the persisted entity.
      */
-    public ReportDTO update(ReportDTO reportDTO) {
-        log.debug("Request to save Report : {}", reportDTO);
-        Report report = reportMapper.toEntity(reportDTO);
-        report = reportRepository.save(report);
-        return reportMapper.toDto(report);
-    }
+    ReportDTO update(ReportDTO reportDTO);
 
     /**
-     * Partially update a report.
+     * Partially updates a report.
      *
      * @param reportDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<ReportDTO> partialUpdate(ReportDTO reportDTO) {
-        log.debug("Request to partially update Report : {}", reportDTO);
-
-        return reportRepository
-            .findById(reportDTO.getId())
-            .map(existingReport -> {
-                reportMapper.partialUpdate(existingReport, reportDTO);
-
-                return existingReport;
-            })
-            .map(reportRepository::save)
-            .map(reportMapper::toDto);
-    }
+    Optional<ReportDTO> partialUpdate(ReportDTO reportDTO);
 
     /**
      * Get all the reports.
@@ -82,31 +39,20 @@ public class ReportService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    @Transactional(readOnly = true)
-    public Page<ReportDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Reports");
-        return reportRepository.findAll(pageable).map(reportMapper::toDto);
-    }
+    Page<ReportDTO> findAll(Pageable pageable);
 
     /**
-     * Get one report by id.
+     * Get the "id" report.
      *
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
-    public Optional<ReportDTO> findOne(Long id) {
-        log.debug("Request to get Report : {}", id);
-        return reportRepository.findById(id).map(reportMapper::toDto);
-    }
+    Optional<ReportDTO> findOne(Long id);
 
     /**
-     * Delete the report by id.
+     * Delete the "id" report.
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
-        log.debug("Request to delete Report : {}", id);
-        reportRepository.deleteById(id);
-    }
+    void delete(Long id);
 }

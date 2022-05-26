@@ -35,5 +35,5 @@
       "relationshipValidateRules": "required"
     }
   ],
-  "service": "serviceClass"
+  "service": "serviceImpl"
 }
