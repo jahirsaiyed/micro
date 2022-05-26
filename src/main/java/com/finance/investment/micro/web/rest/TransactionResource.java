@@ -1,8 +1,8 @@
 package com.finance.investment.micro.web.rest;
 
-import com.finance.investment.micro.domain.Transaction;
 import com.finance.investment.micro.repository.TransactionRepository;
 import com.finance.investment.micro.service.TransactionService;
+import com.finance.investment.micro.service.dto.TransactionDTO;
 import com.finance.investment.micro.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,17 +51,17 @@ public class TransactionResource {
     /**
      * {@code POST  /transactions} : Create a new transaction.
      *
-     * @param transaction the transaction to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new transaction, or with status {@code 400 (Bad Request)} if the transaction has already an ID.
+     * @param transactionDTO the transactionDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new transactionDTO, or with status {@code 400 (Bad Request)} if the transaction has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/transactions")
-    public ResponseEntity<Transaction> createTransaction(@Valid @RequestBody Transaction transaction) throws URISyntaxException {
-        log.debug("REST request to save Transaction : {}", transaction);
-        if (transaction.getId() != null) {
+    public ResponseEntity<TransactionDTO> createTransaction(@Valid @RequestBody TransactionDTO transactionDTO) throws URISyntaxException {
+        log.debug("REST request to save Transaction : {}", transactionDTO);
+        if (transactionDTO.getId() != null) {
             throw new BadRequestAlertException("A new transaction cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Transaction result = transactionService.save(transaction);
+        TransactionDTO result = transactionService.save(transactionDTO);
         return ResponseEntity
             .created(new URI("/api/transactions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -71,23 +71,23 @@ public class TransactionResource {
     /**
      * {@code PUT  /transactions/:id} : Updates an existing transaction.
      *
-     * @param id the id of the transaction to save.
-     * @param transaction the transaction to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated transaction,
-     * or with status {@code 400 (Bad Request)} if the transaction is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the transaction couldn't be updated.
+     * @param id the id of the transactionDTO to save.
+     * @param transactionDTO the transactionDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated transactionDTO,
+     * or with status {@code 400 (Bad Request)} if the transactionDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the transactionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/transactions/{id}")
-    public ResponseEntity<Transaction> updateTransaction(
+    public ResponseEntity<TransactionDTO> updateTransaction(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Transaction transaction
+        @Valid @RequestBody TransactionDTO transactionDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Transaction : {}, {}", id, transaction);
-        if (transaction.getId() == null) {
+        log.debug("REST request to update Transaction : {}, {}", id, transactionDTO);
+        if (transactionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, transaction.getId())) {
+        if (!Objects.equals(id, transactionDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -95,34 +95,34 @@ public class TransactionResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Transaction result = transactionService.update(transaction);
+        TransactionDTO result = transactionService.update(transactionDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, transaction.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, transactionDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /transactions/:id} : Partial updates given fields of an existing transaction, field will ignore if it is null
      *
-     * @param id the id of the transaction to save.
-     * @param transaction the transaction to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated transaction,
-     * or with status {@code 400 (Bad Request)} if the transaction is not valid,
-     * or with status {@code 404 (Not Found)} if the transaction is not found,
-     * or with status {@code 500 (Internal Server Error)} if the transaction couldn't be updated.
+     * @param id the id of the transactionDTO to save.
+     * @param transactionDTO the transactionDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated transactionDTO,
+     * or with status {@code 400 (Bad Request)} if the transactionDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the transactionDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the transactionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/transactions/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Transaction> partialUpdateTransaction(
+    public ResponseEntity<TransactionDTO> partialUpdateTransaction(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Transaction transaction
+        @NotNull @RequestBody TransactionDTO transactionDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Transaction partially : {}, {}", id, transaction);
-        if (transaction.getId() == null) {
+        log.debug("REST request to partial update Transaction partially : {}, {}", id, transactionDTO);
+        if (transactionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, transaction.getId())) {
+        if (!Objects.equals(id, transactionDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -130,11 +130,11 @@ public class TransactionResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Transaction> result = transactionService.partialUpdate(transaction);
+        Optional<TransactionDTO> result = transactionService.partialUpdate(transactionDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, transaction.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, transactionDTO.getId().toString())
         );
     }
 
@@ -145,9 +145,9 @@ public class TransactionResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of transactions in body.
      */
     @GetMapping("/transactions")
-    public ResponseEntity<List<Transaction>> getAllTransactions(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<TransactionDTO>> getAllTransactions(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Transactions");
-        Page<Transaction> page = transactionService.findAll(pageable);
+        Page<TransactionDTO> page = transactionService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -155,20 +155,20 @@ public class TransactionResource {
     /**
      * {@code GET  /transactions/:id} : get the "id" transaction.
      *
-     * @param id the id of the transaction to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the transaction, or with status {@code 404 (Not Found)}.
+     * @param id the id of the transactionDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the transactionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/transactions/{id}")
-    public ResponseEntity<Transaction> getTransaction(@PathVariable Long id) {
+    public ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long id) {
         log.debug("REST request to get Transaction : {}", id);
-        Optional<Transaction> transaction = transactionService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(transaction);
+        Optional<TransactionDTO> transactionDTO = transactionService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(transactionDTO);
     }
 
     /**
      * {@code DELETE  /transactions/:id} : delete the "id" transaction.
      *
-     * @param id the id of the transaction to delete.
+     * @param id the id of the transactionDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/transactions/{id}")

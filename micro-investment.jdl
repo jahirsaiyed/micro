@@ -9,6 +9,7 @@ application {
     clientFramework angularX
 	clientPackageManager npm
 	cacheProvider redis
+	dtoSuffix DTO
     enableTranslation true
 	serverPort 8123
     nativeLanguage en
@@ -29,6 +30,10 @@ entity Investor {
     city String required
     country String required
 	createdOn Instant
+}
+
+entity InvestorPortfolio {
+	units BigDecimal
 }
 
 enum Gender {
@@ -60,10 +65,19 @@ entity Report {
 	createdOn LocalDate
 }
 
+entity MasterDetails {
+	balance BigDecimal
+	totalUnits BigDecimal
+	aum BigDecimal // Asset under management (total investments)
+	createdOn LocalDate
+}
+
 
 relationship OneToOne {
     Transaction{user required} to Investor
+	Investor{portfolio} to InvestorPortfolio{investor}
 }
 
-service * with serviceClass
+dto * with mapstruct
+service * with serviceImpl
 paginate * with pagination

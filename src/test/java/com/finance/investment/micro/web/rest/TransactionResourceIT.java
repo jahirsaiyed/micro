@@ -11,6 +11,8 @@ import com.finance.investment.micro.domain.Investor;
 import com.finance.investment.micro.domain.Transaction;
 import com.finance.investment.micro.domain.enumeration.TransactionType;
 import com.finance.investment.micro.repository.TransactionRepository;
+import com.finance.investment.micro.service.dto.TransactionDTO;
+import com.finance.investment.micro.service.mapper.TransactionMapper;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -56,6 +58,9 @@ class TransactionResourceIT {
 
     @Autowired
     private TransactionRepository transactionRepository;
+
+    @Autowired
+    private TransactionMapper transactionMapper;
 
     @Autowired
     private EntityManager em;
@@ -117,8 +122,11 @@ class TransactionResourceIT {
     void createTransaction() throws Exception {
         int databaseSizeBeforeCreate = transactionRepository.findAll().size();
         // Create the Transaction
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
         restTransactionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(transaction)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(transactionDTO))
+            )
             .andExpect(status().isCreated());
 
         // Validate the Transaction in the database
@@ -135,12 +143,15 @@ class TransactionResourceIT {
     void createTransactionWithExistingId() throws Exception {
         // Create the Transaction with an existing ID
         transaction.setId(1L);
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
 
         int databaseSizeBeforeCreate = transactionRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTransactionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(transaction)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(transactionDTO))
+            )
             .andExpect(status().isBadRequest());
 
         // Validate the Transaction in the database
@@ -156,9 +167,12 @@ class TransactionResourceIT {
         transaction.setAmount(null);
 
         // Create the Transaction, which fails.
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
 
         restTransactionMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(transaction)))
+            .perform(
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(transactionDTO))
+            )
             .andExpect(status().isBadRequest());
 
         List<Transaction> transactionList = transactionRepository.findAll();
@@ -219,12 +233,13 @@ class TransactionResourceIT {
         // Disconnect from session so that the updates on updatedTransaction are not directly saved in db
         em.detach(updatedTransaction);
         updatedTransaction.amount(UPDATED_AMOUNT).createdOn(UPDATED_CREATED_ON).type(UPDATED_TYPE);
+        TransactionDTO transactionDTO = transactionMapper.toDto(updatedTransaction);
 
         restTransactionMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedTransaction.getId())
+                put(ENTITY_API_URL_ID, transactionDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedTransaction))
+                    .content(TestUtil.convertObjectToJsonBytes(transactionDTO))
             )
             .andExpect(status().isOk());
 
@@ -243,12 +258,15 @@ class TransactionResourceIT {
         int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
         transaction.setId(count.incrementAndGet());
 
+        // Create the Transaction
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTransactionMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, transaction.getId())
+                put(ENTITY_API_URL_ID, transactionDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(transaction))
+                    .content(TestUtil.convertObjectToJsonBytes(transactionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -263,12 +281,15 @@ class TransactionResourceIT {
         int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
         transaction.setId(count.incrementAndGet());
 
+        // Create the Transaction
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTransactionMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(transaction))
+                    .content(TestUtil.convertObjectToJsonBytes(transactionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -283,9 +304,12 @@ class TransactionResourceIT {
         int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
         transaction.setId(count.incrementAndGet());
 
+        // Create the Transaction
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTransactionMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(transaction)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(transactionDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Transaction in the database
@@ -361,12 +385,15 @@ class TransactionResourceIT {
         int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
         transaction.setId(count.incrementAndGet());
 
+        // Create the Transaction
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTransactionMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, transaction.getId())
+                patch(ENTITY_API_URL_ID, transactionDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(transaction))
+                    .content(TestUtil.convertObjectToJsonBytes(transactionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -381,12 +408,15 @@ class TransactionResourceIT {
         int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
         transaction.setId(count.incrementAndGet());
 
+        // Create the Transaction
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTransactionMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(transaction))
+                    .content(TestUtil.convertObjectToJsonBytes(transactionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -401,10 +431,13 @@ class TransactionResourceIT {
         int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
         transaction.setId(count.incrementAndGet());
 
+        // Create the Transaction
+        TransactionDTO transactionDTO = transactionMapper.toDto(transaction);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTransactionMockMvc
             .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(transaction))
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(transactionDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

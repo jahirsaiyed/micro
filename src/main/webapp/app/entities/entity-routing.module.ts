@@ -19,6 +19,16 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'microApp.report.home.title' },
         loadChildren: () => import('./report/report.module').then(m => m.ReportModule),
       },
+      {
+        path: 'master-details',
+        data: { pageTitle: 'microApp.masterDetails.home.title' },
+        loadChildren: () => import('./master-details/master-details.module').then(m => m.MasterDetailsModule),
+      },
+      {
+        path: 'investor-portfolio',
+        data: { pageTitle: 'microApp.investorPortfolio.home.title' },
+        loadChildren: () => import('./investor-portfolio/investor-portfolio.module').then(m => m.InvestorPortfolioModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

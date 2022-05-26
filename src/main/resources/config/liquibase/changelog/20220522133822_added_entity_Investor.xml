@@ -44,6 +44,9 @@
             <column name="created_on" type="${datetimeType}">
                 <constraints nullable="true" />
             </column>
+            <column name="portfolio_id" type="bigint">
+                <constraints nullable="true" unique="true" uniqueConstraintName="ux_investor__portfolio_id" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
         <dropDefaultValue tableName="investor" columnName="created_on" columnDataType="${datetimeType}"/>

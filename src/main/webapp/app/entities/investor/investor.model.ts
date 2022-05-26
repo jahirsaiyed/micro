@@ -1,4 +1,5 @@
 import dayjs from 'dayjs/esm';
+import { IInvestorPortfolio } from 'app/entities/investor-portfolio/investor-portfolio.model';
 import { Gender } from 'app/entities/enumerations/gender.model';
 
 export interface IInvestor {
@@ -13,6 +14,7 @@ export interface IInvestor {
   city?: string;
   country?: string;
   createdOn?: dayjs.Dayjs | null;
+  portfolio?: IInvestorPortfolio | null;
 }
 
 export class Investor implements IInvestor {
@@ -27,7 +29,8 @@ export class Investor implements IInvestor {
     public addressLine2?: string | null,
     public city?: string,
     public country?: string,
-    public createdOn?: dayjs.Dayjs | null
+    public createdOn?: dayjs.Dayjs | null,
+    public portfolio?: IInvestorPortfolio | null
   ) {}
 }
 

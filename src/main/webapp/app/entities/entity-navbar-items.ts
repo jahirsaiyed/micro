@@ -14,4 +14,14 @@ export const EntityNavbarItems = [
     route: 'report',
     translationKey: 'global.menu.entities.report',
   },
+  {
+    name: 'MasterDetails',
+    route: 'master-details',
+    translationKey: 'global.menu.entities.masterDetails',
+  },
+  {
+    name: 'InvestorPortfolio',
+    route: 'investor-portfolio',
+    translationKey: 'global.menu.entities.investorPortfolio',
+  },
 ];

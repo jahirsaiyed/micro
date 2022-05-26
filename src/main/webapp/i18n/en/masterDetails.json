@@ -1,0 +1,27 @@
+{
+  "microApp": {
+    "masterDetails": {
+      "home": {
+        "title": "Master Details",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Master Details",
+        "createOrEditLabel": "Create or edit a Master Details",
+        "notFound": "No Master Details found"
+      },
+      "created": "A new Master Details is created with identifier {{ param }}",
+      "updated": "A Master Details is updated with identifier {{ param }}",
+      "deleted": "A Master Details is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Master Details {{ id }}?"
+      },
+      "detail": {
+        "title": "Master Details"
+      },
+      "id": "ID",
+      "balance": "Balance",
+      "totalUnits": "Total Units",
+      "aum": "Aum",
+      "createdOn": "Created On"
+    }
+  }
+}

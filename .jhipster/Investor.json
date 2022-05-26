@@ -1,7 +1,7 @@
 {
   "applications": ["micro"],
   "changelogDate": "20220522133822",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "investor",
   "fields": [
@@ -59,6 +59,14 @@
   "name": "Investor",
   "pagination": "pagination",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "investorPortfolio",
+      "otherEntityRelationshipName": "investor",
+      "ownerSide": true,
+      "relationshipName": "portfolio",
+      "relationshipType": "one-to-one"
+    }
+  ],
   "service": "serviceClass"
 }

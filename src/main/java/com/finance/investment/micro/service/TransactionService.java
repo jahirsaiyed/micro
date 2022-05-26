@@ -2,6 +2,8 @@ package com.finance.investment.micro.service;
 
 import com.finance.investment.micro.domain.Transaction;
 import com.finance.investment.micro.repository.TransactionRepository;
+import com.finance.investment.micro.service.dto.TransactionDTO;
+import com.finance.investment.micro.service.mapper.TransactionMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,57 +23,57 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    public TransactionService(TransactionRepository transactionRepository) {
+    private final TransactionMapper transactionMapper;
+
+    public TransactionService(TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
         this.transactionRepository = transactionRepository;
+        this.transactionMapper = transactionMapper;
     }
 
     /**
      * Save a transaction.
      *
-     * @param transaction the entity to save.
+     * @param transactionDTO the entity to save.
      * @return the persisted entity.
      */
-    public Transaction save(Transaction transaction) {
-        log.debug("Request to save Transaction : {}", transaction);
-        return transactionRepository.save(transaction);
+    public TransactionDTO save(TransactionDTO transactionDTO) {
+        log.debug("Request to save Transaction : {}", transactionDTO);
+        Transaction transaction = transactionMapper.toEntity(transactionDTO);
+        transaction = transactionRepository.save(transaction);
+        return transactionMapper.toDto(transaction);
     }
 
     /**
      * Update a transaction.
      *
-     * @param transaction the entity to save.
+     * @param transactionDTO the entity to save.
      * @return the persisted entity.
      */
-    public Transaction update(Transaction transaction) {
-        log.debug("Request to save Transaction : {}", transaction);
-        return transactionRepository.save(transaction);
+    public TransactionDTO update(TransactionDTO transactionDTO) {
+        log.debug("Request to save Transaction : {}", transactionDTO);
+        Transaction transaction = transactionMapper.toEntity(transactionDTO);
+        transaction = transactionRepository.save(transaction);
+        return transactionMapper.toDto(transaction);
     }
 
     /**
      * Partially update a transaction.
      *
-     * @param transaction the entity to update partially.
+     * @param transactionDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<Transaction> partialUpdate(Transaction transaction) {
-        log.debug("Request to partially update Transaction : {}", transaction);
+    public Optional<TransactionDTO> partialUpdate(TransactionDTO transactionDTO) {
+        log.debug("Request to partially update Transaction : {}", transactionDTO);
 
         return transactionRepository
-            .findById(transaction.getId())
+            .findById(transactionDTO.getId())
             .map(existingTransaction -> {
-                if (transaction.getAmount() != null) {
-                    existingTransaction.setAmount(transaction.getAmount());
-                }
-                if (transaction.getCreatedOn() != null) {
-                    existingTransaction.setCreatedOn(transaction.getCreatedOn());
-                }
-                if (transaction.getType() != null) {
-                    existingTransaction.setType(transaction.getType());
-                }
+                transactionMapper.partialUpdate(existingTransaction, transactionDTO);
 
                 return existingTransaction;
             })
-            .map(transactionRepository::save);
+            .map(transactionRepository::save)
+            .map(transactionMapper::toDto);
     }
 
     /**
@@ -81,9 +83,9 @@ public class TransactionService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Transaction> findAll(Pageable pageable) {
+    public Page<TransactionDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Transactions");
-        return transactionRepository.findAll(pageable);
+        return transactionRepository.findAll(pageable).map(transactionMapper::toDto);
     }
 
     /**
@@ -93,9 +95,9 @@ public class TransactionService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Transaction> findOne(Long id) {
+    public Optional<TransactionDTO> findOne(Long id) {
         log.debug("Request to get Transaction : {}", id);
-        return transactionRepository.findById(id);
+        return transactionRepository.findById(id).map(transactionMapper::toDto);
     }
 
     /**

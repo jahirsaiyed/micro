@@ -2,6 +2,8 @@ package com.finance.investment.micro.service;
 
 import com.finance.investment.micro.domain.Investor;
 import com.finance.investment.micro.repository.InvestorRepository;
+import com.finance.investment.micro.service.dto.InvestorDTO;
+import com.finance.investment.micro.service.mapper.InvestorMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,78 +23,57 @@ public class InvestorService {
 
     private final InvestorRepository investorRepository;
 
-    public InvestorService(InvestorRepository investorRepository) {
+    private final InvestorMapper investorMapper;
+
+    public InvestorService(InvestorRepository investorRepository, InvestorMapper investorMapper) {
         this.investorRepository = investorRepository;
+        this.investorMapper = investorMapper;
     }
 
     /**
      * Save a investor.
      *
-     * @param investor the entity to save.
+     * @param investorDTO the entity to save.
      * @return the persisted entity.
      */
-    public Investor save(Investor investor) {
-        log.debug("Request to save Investor : {}", investor);
-        return investorRepository.save(investor);
+    public InvestorDTO save(InvestorDTO investorDTO) {
+        log.debug("Request to save Investor : {}", investorDTO);
+        Investor investor = investorMapper.toEntity(investorDTO);
+        investor = investorRepository.save(investor);
+        return investorMapper.toDto(investor);
     }
 
     /**
      * Update a investor.
      *
-     * @param investor the entity to save.
+     * @param investorDTO the entity to save.
      * @return the persisted entity.
      */
-    public Investor update(Investor investor) {
-        log.debug("Request to save Investor : {}", investor);
-        return investorRepository.save(investor);
+    public InvestorDTO update(InvestorDTO investorDTO) {
+        log.debug("Request to save Investor : {}", investorDTO);
+        Investor investor = investorMapper.toEntity(investorDTO);
+        investor = investorRepository.save(investor);
+        return investorMapper.toDto(investor);
     }
 
     /**
      * Partially update a investor.
      *
-     * @param investor the entity to update partially.
+     * @param investorDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<Investor> partialUpdate(Investor investor) {
-        log.debug("Request to partially update Investor : {}", investor);
+    public Optional<InvestorDTO> partialUpdate(InvestorDTO investorDTO) {
+        log.debug("Request to partially update Investor : {}", investorDTO);
 
         return investorRepository
-            .findById(investor.getId())
+            .findById(investorDTO.getId())
             .map(existingInvestor -> {
-                if (investor.getName() != null) {
-                    existingInvestor.setName(investor.getName());
-                }
-                if (investor.getDescription() != null) {
-                    existingInvestor.setDescription(investor.getDescription());
-                }
-                if (investor.getEmail() != null) {
-                    existingInvestor.setEmail(investor.getEmail());
-                }
-                if (investor.getGender() != null) {
-                    existingInvestor.setGender(investor.getGender());
-                }
-                if (investor.getPhone() != null) {
-                    existingInvestor.setPhone(investor.getPhone());
-                }
-                if (investor.getAddressLine1() != null) {
-                    existingInvestor.setAddressLine1(investor.getAddressLine1());
-                }
-                if (investor.getAddressLine2() != null) {
-                    existingInvestor.setAddressLine2(investor.getAddressLine2());
-                }
-                if (investor.getCity() != null) {
-                    existingInvestor.setCity(investor.getCity());
-                }
-                if (investor.getCountry() != null) {
-                    existingInvestor.setCountry(investor.getCountry());
-                }
-                if (investor.getCreatedOn() != null) {
-                    existingInvestor.setCreatedOn(investor.getCreatedOn());
-                }
+                investorMapper.partialUpdate(existingInvestor, investorDTO);
 
                 return existingInvestor;
             })
-            .map(investorRepository::save);
+            .map(investorRepository::save)
+            .map(investorMapper::toDto);
     }
 
     /**
@@ -102,9 +83,9 @@ public class InvestorService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Investor> findAll(Pageable pageable) {
+    public Page<InvestorDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Investors");
-        return investorRepository.findAll(pageable);
+        return investorRepository.findAll(pageable).map(investorMapper::toDto);
     }
 
     /**
@@ -114,9 +95,9 @@ public class InvestorService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Investor> findOne(Long id) {
+    public Optional<InvestorDTO> findOne(Long id) {
         log.debug("Request to get Investor : {}", id);
-        return investorRepository.findById(id);
+        return investorRepository.findById(id).map(investorMapper::toDto);
     }
 
     /**

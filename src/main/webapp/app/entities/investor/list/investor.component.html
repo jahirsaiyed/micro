@@ -55,6 +55,9 @@
           <th scope="col" jhiSortBy="createdOn">
             <span jhiTranslate="microApp.investor.createdOn">Created On</span> <fa-icon icon="sort"></fa-icon>
           </th>
+          <th scope="col" jhiSortBy="portfolio.id">
+            <span jhiTranslate="microApp.investor.portfolio">Portfolio</span> <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -73,6 +76,11 @@
           <td>{{ investor.city }}</td>
           <td>{{ investor.country }}</td>
           <td>{{ investor.createdOn | formatMediumDatetime }}</td>
+          <td>
+            <div *ngIf="investor.portfolio">
+              <a [routerLink]="['/investor-portfolio', investor.portfolio?.id, 'view']">{{ investor.portfolio?.id }}</a>
+            </div>
+          </td>
           <td class="text-end">
             <div class="btn-group">
               <button

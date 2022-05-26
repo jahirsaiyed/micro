@@ -2,6 +2,8 @@ package com.finance.investment.micro.service;
 
 import com.finance.investment.micro.domain.Report;
 import com.finance.investment.micro.repository.ReportRepository;
+import com.finance.investment.micro.service.dto.ReportDTO;
+import com.finance.investment.micro.service.mapper.ReportMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,63 +23,57 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
 
-    public ReportService(ReportRepository reportRepository) {
+    private final ReportMapper reportMapper;
+
+    public ReportService(ReportRepository reportRepository, ReportMapper reportMapper) {
         this.reportRepository = reportRepository;
+        this.reportMapper = reportMapper;
     }
 
     /**
      * Save a report.
      *
-     * @param report the entity to save.
+     * @param reportDTO the entity to save.
      * @return the persisted entity.
      */
-    public Report save(Report report) {
-        log.debug("Request to save Report : {}", report);
-        return reportRepository.save(report);
+    public ReportDTO save(ReportDTO reportDTO) {
+        log.debug("Request to save Report : {}", reportDTO);
+        Report report = reportMapper.toEntity(reportDTO);
+        report = reportRepository.save(report);
+        return reportMapper.toDto(report);
     }
 
     /**
      * Update a report.
      *
-     * @param report the entity to save.
+     * @param reportDTO the entity to save.
      * @return the persisted entity.
      */
-    public Report update(Report report) {
-        log.debug("Request to save Report : {}", report);
-        return reportRepository.save(report);
+    public ReportDTO update(ReportDTO reportDTO) {
+        log.debug("Request to save Report : {}", reportDTO);
+        Report report = reportMapper.toEntity(reportDTO);
+        report = reportRepository.save(report);
+        return reportMapper.toDto(report);
     }
 
     /**
      * Partially update a report.
      *
-     * @param report the entity to update partially.
+     * @param reportDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<Report> partialUpdate(Report report) {
-        log.debug("Request to partially update Report : {}", report);
+    public Optional<ReportDTO> partialUpdate(ReportDTO reportDTO) {
+        log.debug("Request to partially update Report : {}", reportDTO);
 
         return reportRepository
-            .findById(report.getId())
+            .findById(reportDTO.getId())
             .map(existingReport -> {
-                if (report.getType() != null) {
-                    existingReport.setType(report.getType());
-                }
-                if (report.getBalance() != null) {
-                    existingReport.setBalance(report.getBalance());
-                }
-                if (report.getTotalUnits() != null) {
-                    existingReport.setTotalUnits(report.getTotalUnits());
-                }
-                if (report.getAum() != null) {
-                    existingReport.setAum(report.getAum());
-                }
-                if (report.getCreatedOn() != null) {
-                    existingReport.setCreatedOn(report.getCreatedOn());
-                }
+                reportMapper.partialUpdate(existingReport, reportDTO);
 
                 return existingReport;
             })
-            .map(reportRepository::save);
+            .map(reportRepository::save)
+            .map(reportMapper::toDto);
     }
 
     /**
@@ -87,9 +83,9 @@ public class ReportService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Report> findAll(Pageable pageable) {
+    public Page<ReportDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Reports");
-        return reportRepository.findAll(pageable);
+        return reportRepository.findAll(pageable).map(reportMapper::toDto);
     }
 
     /**
@@ -99,9 +95,9 @@ public class ReportService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Report> findOne(Long id) {
+    public Optional<ReportDTO> findOne(Long id) {
         log.debug("Request to get Report : {}", id);
-        return reportRepository.findById(id);
+        return reportRepository.findById(id).map(reportMapper::toDto);
     }
 
     /**

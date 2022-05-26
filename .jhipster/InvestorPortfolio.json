@@ -1,0 +1,28 @@
+{
+  "applications": ["micro"],
+  "changelogDate": "20220522183831",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "investor_portfolio",
+  "fields": [
+    {
+      "fieldName": "units",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "InvestorPortfolio",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "investor",
+      "otherEntityRelationshipName": "portfolio",
+      "ownerSide": false,
+      "relationshipName": "investor",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

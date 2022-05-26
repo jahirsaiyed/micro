@@ -1,8 +1,8 @@
 package com.finance.investment.micro.web.rest;
 
-import com.finance.investment.micro.domain.Investor;
 import com.finance.investment.micro.repository.InvestorRepository;
 import com.finance.investment.micro.service.InvestorService;
+import com.finance.investment.micro.service.dto.InvestorDTO;
 import com.finance.investment.micro.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,17 +51,17 @@ public class InvestorResource {
     /**
      * {@code POST  /investors} : Create a new investor.
      *
-     * @param investor the investor to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new investor, or with status {@code 400 (Bad Request)} if the investor has already an ID.
+     * @param investorDTO the investorDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new investorDTO, or with status {@code 400 (Bad Request)} if the investor has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/investors")
-    public ResponseEntity<Investor> createInvestor(@Valid @RequestBody Investor investor) throws URISyntaxException {
-        log.debug("REST request to save Investor : {}", investor);
-        if (investor.getId() != null) {
+    public ResponseEntity<InvestorDTO> createInvestor(@Valid @RequestBody InvestorDTO investorDTO) throws URISyntaxException {
+        log.debug("REST request to save Investor : {}", investorDTO);
+        if (investorDTO.getId() != null) {
             throw new BadRequestAlertException("A new investor cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Investor result = investorService.save(investor);
+        InvestorDTO result = investorService.save(investorDTO);
         return ResponseEntity
             .created(new URI("/api/investors/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -71,23 +71,23 @@ public class InvestorResource {
     /**
      * {@code PUT  /investors/:id} : Updates an existing investor.
      *
-     * @param id the id of the investor to save.
-     * @param investor the investor to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated investor,
-     * or with status {@code 400 (Bad Request)} if the investor is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the investor couldn't be updated.
+     * @param id the id of the investorDTO to save.
+     * @param investorDTO the investorDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated investorDTO,
+     * or with status {@code 400 (Bad Request)} if the investorDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the investorDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/investors/{id}")
-    public ResponseEntity<Investor> updateInvestor(
+    public ResponseEntity<InvestorDTO> updateInvestor(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Investor investor
+        @Valid @RequestBody InvestorDTO investorDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Investor : {}, {}", id, investor);
-        if (investor.getId() == null) {
+        log.debug("REST request to update Investor : {}, {}", id, investorDTO);
+        if (investorDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, investor.getId())) {
+        if (!Objects.equals(id, investorDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -95,34 +95,34 @@ public class InvestorResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Investor result = investorService.update(investor);
+        InvestorDTO result = investorService.update(investorDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, investor.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, investorDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /investors/:id} : Partial updates given fields of an existing investor, field will ignore if it is null
      *
-     * @param id the id of the investor to save.
-     * @param investor the investor to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated investor,
-     * or with status {@code 400 (Bad Request)} if the investor is not valid,
-     * or with status {@code 404 (Not Found)} if the investor is not found,
-     * or with status {@code 500 (Internal Server Error)} if the investor couldn't be updated.
+     * @param id the id of the investorDTO to save.
+     * @param investorDTO the investorDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated investorDTO,
+     * or with status {@code 400 (Bad Request)} if the investorDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the investorDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the investorDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/investors/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Investor> partialUpdateInvestor(
+    public ResponseEntity<InvestorDTO> partialUpdateInvestor(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Investor investor
+        @NotNull @RequestBody InvestorDTO investorDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Investor partially : {}, {}", id, investor);
-        if (investor.getId() == null) {
+        log.debug("REST request to partial update Investor partially : {}, {}", id, investorDTO);
+        if (investorDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, investor.getId())) {
+        if (!Objects.equals(id, investorDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -130,11 +130,11 @@ public class InvestorResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Investor> result = investorService.partialUpdate(investor);
+        Optional<InvestorDTO> result = investorService.partialUpdate(investorDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, investor.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, investorDTO.getId().toString())
         );
     }
 
@@ -145,9 +145,9 @@ public class InvestorResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of investors in body.
      */
     @GetMapping("/investors")
-    public ResponseEntity<List<Investor>> getAllInvestors(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<InvestorDTO>> getAllInvestors(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Investors");
-        Page<Investor> page = investorService.findAll(pageable);
+        Page<InvestorDTO> page = investorService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -155,20 +155,20 @@ public class InvestorResource {
     /**
      * {@code GET  /investors/:id} : get the "id" investor.
      *
-     * @param id the id of the investor to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the investor, or with status {@code 404 (Not Found)}.
+     * @param id the id of the investorDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the investorDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/investors/{id}")
-    public ResponseEntity<Investor> getInvestor(@PathVariable Long id) {
+    public ResponseEntity<InvestorDTO> getInvestor(@PathVariable Long id) {
         log.debug("REST request to get Investor : {}", id);
-        Optional<Investor> investor = investorService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(investor);
+        Optional<InvestorDTO> investorDTO = investorService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(investorDTO);
     }
 
     /**
      * {@code DELETE  /investors/:id} : delete the "id" investor.
      *
-     * @param id the id of the investor to delete.
+     * @param id the id of the investorDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/investors/{id}")

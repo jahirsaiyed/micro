@@ -84,6 +84,8 @@ public class CacheConfiguration {
             createCache(cm, com.finance.investment.micro.domain.Investor.class.getName(), jcacheConfiguration);
             createCache(cm, com.finance.investment.micro.domain.Transaction.class.getName(), jcacheConfiguration);
             createCache(cm, com.finance.investment.micro.domain.Report.class.getName(), jcacheConfiguration);
+            createCache(cm, com.finance.investment.micro.domain.MasterDetails.class.getName(), jcacheConfiguration);
+            createCache(cm, com.finance.investment.micro.domain.InvestorPortfolio.class.getName(), jcacheConfiguration);
             // jhipster-needle-redis-add-entry
         };
     }

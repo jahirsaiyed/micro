@@ -9,6 +9,8 @@ import com.finance.investment.micro.IntegrationTest;
 import com.finance.investment.micro.domain.Investor;
 import com.finance.investment.micro.domain.enumeration.Gender;
 import com.finance.investment.micro.repository.InvestorRepository;
+import com.finance.investment.micro.service.dto.InvestorDTO;
+import com.finance.investment.micro.service.mapper.InvestorMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -76,6 +78,9 @@ class InvestorResourceIT {
     private InvestorRepository investorRepository;
 
     @Autowired
+    private InvestorMapper investorMapper;
+
+    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -135,8 +140,9 @@ class InvestorResourceIT {
     void createInvestor() throws Exception {
         int databaseSizeBeforeCreate = investorRepository.findAll().size();
         // Create the Investor
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Investor in the database
@@ -160,12 +166,13 @@ class InvestorResourceIT {
     void createInvestorWithExistingId() throws Exception {
         // Create the Investor with an existing ID
         investor.setId(1L);
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
 
         int databaseSizeBeforeCreate = investorRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Investor in the database
@@ -181,9 +188,10 @@ class InvestorResourceIT {
         investor.setName(null);
 
         // Create the Investor, which fails.
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
 
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isBadRequest());
 
         List<Investor> investorList = investorRepository.findAll();
@@ -198,9 +206,10 @@ class InvestorResourceIT {
         investor.setEmail(null);
 
         // Create the Investor, which fails.
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
 
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isBadRequest());
 
         List<Investor> investorList = investorRepository.findAll();
@@ -215,9 +224,10 @@ class InvestorResourceIT {
         investor.setGender(null);
 
         // Create the Investor, which fails.
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
 
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isBadRequest());
 
         List<Investor> investorList = investorRepository.findAll();
@@ -232,9 +242,10 @@ class InvestorResourceIT {
         investor.setPhone(null);
 
         // Create the Investor, which fails.
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
 
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isBadRequest());
 
         List<Investor> investorList = investorRepository.findAll();
@@ -249,9 +260,10 @@ class InvestorResourceIT {
         investor.setAddressLine1(null);
 
         // Create the Investor, which fails.
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
 
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isBadRequest());
 
         List<Investor> investorList = investorRepository.findAll();
@@ -266,9 +278,10 @@ class InvestorResourceIT {
         investor.setCity(null);
 
         // Create the Investor, which fails.
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
 
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isBadRequest());
 
         List<Investor> investorList = investorRepository.findAll();
@@ -283,9 +296,10 @@ class InvestorResourceIT {
         investor.setCountry(null);
 
         // Create the Investor, which fails.
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
 
         restInvestorMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isBadRequest());
 
         List<Investor> investorList = investorRepository.findAll();
@@ -370,12 +384,13 @@ class InvestorResourceIT {
             .city(UPDATED_CITY)
             .country(UPDATED_COUNTRY)
             .createdOn(UPDATED_CREATED_ON);
+        InvestorDTO investorDTO = investorMapper.toDto(updatedInvestor);
 
         restInvestorMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedInvestor.getId())
+                put(ENTITY_API_URL_ID, investorDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedInvestor))
+                    .content(TestUtil.convertObjectToJsonBytes(investorDTO))
             )
             .andExpect(status().isOk());
 
@@ -401,12 +416,15 @@ class InvestorResourceIT {
         int databaseSizeBeforeUpdate = investorRepository.findAll().size();
         investor.setId(count.incrementAndGet());
 
+        // Create the Investor
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvestorMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, investor.getId())
+                put(ENTITY_API_URL_ID, investorDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(investor))
+                    .content(TestUtil.convertObjectToJsonBytes(investorDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -421,12 +439,15 @@ class InvestorResourceIT {
         int databaseSizeBeforeUpdate = investorRepository.findAll().size();
         investor.setId(count.incrementAndGet());
 
+        // Create the Investor
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restInvestorMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(investor))
+                    .content(TestUtil.convertObjectToJsonBytes(investorDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -441,9 +462,12 @@ class InvestorResourceIT {
         int databaseSizeBeforeUpdate = investorRepository.findAll().size();
         investor.setId(count.incrementAndGet());
 
+        // Create the Investor
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restInvestorMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(investorDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Investor in the database
@@ -547,12 +571,15 @@ class InvestorResourceIT {
         int databaseSizeBeforeUpdate = investorRepository.findAll().size();
         investor.setId(count.incrementAndGet());
 
+        // Create the Investor
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvestorMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, investor.getId())
+                patch(ENTITY_API_URL_ID, investorDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(investor))
+                    .content(TestUtil.convertObjectToJsonBytes(investorDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -567,12 +594,15 @@ class InvestorResourceIT {
         int databaseSizeBeforeUpdate = investorRepository.findAll().size();
         investor.setId(count.incrementAndGet());
 
+        // Create the Investor
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restInvestorMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(investor))
+                    .content(TestUtil.convertObjectToJsonBytes(investorDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -587,9 +617,14 @@ class InvestorResourceIT {
         int databaseSizeBeforeUpdate = investorRepository.findAll().size();
         investor.setId(count.incrementAndGet());
 
+        // Create the Investor
+        InvestorDTO investorDTO = investorMapper.toDto(investor);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restInvestorMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(investor)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(investorDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Investor in the database

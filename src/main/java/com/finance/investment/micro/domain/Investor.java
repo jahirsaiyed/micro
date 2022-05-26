@@ -1,5 +1,6 @@
 package com.finance.investment.micro.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.finance.investment.micro.domain.enumeration.Gender;
 import java.io.Serializable;
 import java.time.Instant;
@@ -60,6 +61,11 @@ public class Investor implements Serializable {
 
     @Column(name = "created_on")
     private Instant createdOn;
+
+    @JsonIgnoreProperties(value = { "investor" }, allowSetters = true)
+    @OneToOne
+    @JoinColumn(unique = true)
+    private InvestorPortfolio portfolio;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -204,6 +210,19 @@ public class Investor implements Serializable {
 
     public void setCreatedOn(Instant createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public InvestorPortfolio getPortfolio() {
+        return this.portfolio;
+    }
+
+    public void setPortfolio(InvestorPortfolio investorPortfolio) {
+        this.portfolio = investorPortfolio;
+    }
+
+    public Investor portfolio(InvestorPortfolio investorPortfolio) {
+        this.setPortfolio(investorPortfolio);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

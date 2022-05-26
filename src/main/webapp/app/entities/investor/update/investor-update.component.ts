@@ -3,13 +3,15 @@ import { HttpResponse } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import dayjs from 'dayjs/esm';
 import { DATE_TIME_FORMAT } from 'app/config/input.constants';
 
 import { IInvestor, Investor } from '../investor.model';
 import { InvestorService } from '../service/investor.service';
+import { IInvestorPortfolio } from 'app/entities/investor-portfolio/investor-portfolio.model';
+import { InvestorPortfolioService } from 'app/entities/investor-portfolio/service/investor-portfolio.service';
 import { Gender } from 'app/entities/enumerations/gender.model';
 
 @Component({
@@ -19,6 +21,8 @@ import { Gender } from 'app/entities/enumerations/gender.model';
 export class InvestorUpdateComponent implements OnInit {
   isSaving = false;
   genderValues = Object.keys(Gender);
+
+  portfoliosCollection: IInvestorPortfolio[] = [];
 
   editForm = this.fb.group({
     id: [],
@@ -32,9 +36,15 @@ export class InvestorUpdateComponent implements OnInit {
     city: [null, [Validators.required]],
     country: [null, [Validators.required]],
     createdOn: [],
+    portfolio: [],
   });
 
-  constructor(protected investorService: InvestorService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
+  constructor(
+    protected investorService: InvestorService,
+    protected investorPortfolioService: InvestorPortfolioService,
+    protected activatedRoute: ActivatedRoute,
+    protected fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ investor }) => {
@@ -44,6 +54,8 @@ export class InvestorUpdateComponent implements OnInit {
       }
 
       this.updateForm(investor);
+
+      this.loadRelationshipsOptions();
     });
   }
 
@@ -59,6 +71,10 @@ export class InvestorUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.investorService.create(investor));
     }
+  }
+
+  trackInvestorPortfolioById(_index: number, item: IInvestorPortfolio): number {
+    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IInvestor>>): void {
@@ -93,7 +109,25 @@ export class InvestorUpdateComponent implements OnInit {
       city: investor.city,
       country: investor.country,
       createdOn: investor.createdOn ? investor.createdOn.format(DATE_TIME_FORMAT) : null,
+      portfolio: investor.portfolio,
     });
+
+    this.portfoliosCollection = this.investorPortfolioService.addInvestorPortfolioToCollectionIfMissing(
+      this.portfoliosCollection,
+      investor.portfolio
+    );
+  }
+
+  protected loadRelationshipsOptions(): void {
+    this.investorPortfolioService
+      .query({ filter: 'investor-is-null' })
+      .pipe(map((res: HttpResponse<IInvestorPortfolio[]>) => res.body ?? []))
+      .pipe(
+        map((investorPortfolios: IInvestorPortfolio[]) =>
+          this.investorPortfolioService.addInvestorPortfolioToCollectionIfMissing(investorPortfolios, this.editForm.get('portfolio')!.value)
+        )
+      )
+      .subscribe((investorPortfolios: IInvestorPortfolio[]) => (this.portfoliosCollection = investorPortfolios));
   }
 
   protected createFromForm(): IInvestor {
@@ -110,6 +144,7 @@ export class InvestorUpdateComponent implements OnInit {
       city: this.editForm.get(['city'])!.value,
       country: this.editForm.get(['country'])!.value,
       createdOn: this.editForm.get(['createdOn'])!.value ? dayjs(this.editForm.get(['createdOn'])!.value, DATE_TIME_FORMAT) : undefined,
+      portfolio: this.editForm.get(['portfolio'])!.value,
     };
   }
 }

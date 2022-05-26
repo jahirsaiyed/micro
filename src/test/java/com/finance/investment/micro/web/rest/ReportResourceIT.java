@@ -10,6 +10,8 @@ import com.finance.investment.micro.IntegrationTest;
 import com.finance.investment.micro.domain.Report;
 import com.finance.investment.micro.domain.enumeration.ReportType;
 import com.finance.investment.micro.repository.ReportRepository;
+import com.finance.investment.micro.service.dto.ReportDTO;
+import com.finance.investment.micro.service.mapper.ReportMapper;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -63,6 +65,9 @@ class ReportResourceIT {
     private ReportRepository reportRepository;
 
     @Autowired
+    private ReportMapper reportMapper;
+
+    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -112,8 +117,9 @@ class ReportResourceIT {
     void createReport() throws Exception {
         int databaseSizeBeforeCreate = reportRepository.findAll().size();
         // Create the Report
+        ReportDTO reportDTO = reportMapper.toDto(report);
         restReportMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(report)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(reportDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Report in the database
@@ -132,12 +138,13 @@ class ReportResourceIT {
     void createReportWithExistingId() throws Exception {
         // Create the Report with an existing ID
         report.setId(1L);
+        ReportDTO reportDTO = reportMapper.toDto(report);
 
         int databaseSizeBeforeCreate = reportRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restReportMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(report)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(reportDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Report in the database
@@ -208,12 +215,13 @@ class ReportResourceIT {
             .totalUnits(UPDATED_TOTAL_UNITS)
             .aum(UPDATED_AUM)
             .createdOn(UPDATED_CREATED_ON);
+        ReportDTO reportDTO = reportMapper.toDto(updatedReport);
 
         restReportMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedReport.getId())
+                put(ENTITY_API_URL_ID, reportDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedReport))
+                    .content(TestUtil.convertObjectToJsonBytes(reportDTO))
             )
             .andExpect(status().isOk());
 
@@ -234,12 +242,15 @@ class ReportResourceIT {
         int databaseSizeBeforeUpdate = reportRepository.findAll().size();
         report.setId(count.incrementAndGet());
 
+        // Create the Report
+        ReportDTO reportDTO = reportMapper.toDto(report);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restReportMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, report.getId())
+                put(ENTITY_API_URL_ID, reportDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(report))
+                    .content(TestUtil.convertObjectToJsonBytes(reportDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -254,12 +265,15 @@ class ReportResourceIT {
         int databaseSizeBeforeUpdate = reportRepository.findAll().size();
         report.setId(count.incrementAndGet());
 
+        // Create the Report
+        ReportDTO reportDTO = reportMapper.toDto(report);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restReportMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(report))
+                    .content(TestUtil.convertObjectToJsonBytes(reportDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -274,9 +288,12 @@ class ReportResourceIT {
         int databaseSizeBeforeUpdate = reportRepository.findAll().size();
         report.setId(count.incrementAndGet());
 
+        // Create the Report
+        ReportDTO reportDTO = reportMapper.toDto(report);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restReportMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(report)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(reportDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Report in the database
@@ -361,12 +378,15 @@ class ReportResourceIT {
         int databaseSizeBeforeUpdate = reportRepository.findAll().size();
         report.setId(count.incrementAndGet());
 
+        // Create the Report
+        ReportDTO reportDTO = reportMapper.toDto(report);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restReportMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, report.getId())
+                patch(ENTITY_API_URL_ID, reportDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(report))
+                    .content(TestUtil.convertObjectToJsonBytes(reportDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -381,12 +401,15 @@ class ReportResourceIT {
         int databaseSizeBeforeUpdate = reportRepository.findAll().size();
         report.setId(count.incrementAndGet());
 
+        // Create the Report
+        ReportDTO reportDTO = reportMapper.toDto(report);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restReportMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(report))
+                    .content(TestUtil.convertObjectToJsonBytes(reportDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -401,9 +424,14 @@ class ReportResourceIT {
         int databaseSizeBeforeUpdate = reportRepository.findAll().size();
         report.setId(count.incrementAndGet());
 
+        // Create the Report
+        ReportDTO reportDTO = reportMapper.toDto(report);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restReportMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(report)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(reportDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Report in the database

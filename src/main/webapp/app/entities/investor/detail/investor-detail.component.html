@@ -54,6 +54,12 @@
         <dd>
           <span>{{ investor.createdOn | formatMediumDatetime }}</span>
         </dd>
+<!--        <dt><span jhiTranslate="microApp.investor.portfolio">Portfolio</span></dt>-->
+<!--        <dd>-->
+<!--          <div *ngIf="investor.portfolio">-->
+<!--            <a [routerLink]="['/investor-portfolio', investor.portfolio?.id, 'view']">{{ investor.portfolio?.id }}</a>-->
+<!--          </div>-->
+<!--        </dd>-->
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

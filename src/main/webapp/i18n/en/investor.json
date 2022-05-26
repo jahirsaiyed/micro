@@ -27,7 +27,8 @@
       "addressLine2": "Address Line 2",
       "city": "City",
       "country": "Country",
-      "createdOn": "Created On"
+      "createdOn": "Created On",
+      "portfolio": "Portfolio"
     }
   }
 }

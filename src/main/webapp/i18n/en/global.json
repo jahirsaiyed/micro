@@ -10,6 +10,8 @@
         "investor": "Investor",
         "transaction": "Transaction",
         "report": "Report",
+        "masterDetails": "Master Details",
+        "investorPortfolio": "Investor Portfolio",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

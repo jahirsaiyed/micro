@@ -1,8 +1,8 @@
 package com.finance.investment.micro.web.rest;
 
-import com.finance.investment.micro.domain.Report;
 import com.finance.investment.micro.repository.ReportRepository;
 import com.finance.investment.micro.service.ReportService;
+import com.finance.investment.micro.service.dto.ReportDTO;
 import com.finance.investment.micro.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,17 +49,17 @@ public class ReportResource {
     /**
      * {@code POST  /reports} : Create a new report.
      *
-     * @param report the report to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new report, or with status {@code 400 (Bad Request)} if the report has already an ID.
+     * @param reportDTO the reportDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new reportDTO, or with status {@code 400 (Bad Request)} if the report has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/reports")
-    public ResponseEntity<Report> createReport(@RequestBody Report report) throws URISyntaxException {
-        log.debug("REST request to save Report : {}", report);
-        if (report.getId() != null) {
+    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO) throws URISyntaxException {
+        log.debug("REST request to save Report : {}", reportDTO);
+        if (reportDTO.getId() != null) {
             throw new BadRequestAlertException("A new report cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Report result = reportService.save(report);
+        ReportDTO result = reportService.save(reportDTO);
         return ResponseEntity
             .created(new URI("/api/reports/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -69,21 +69,23 @@ public class ReportResource {
     /**
      * {@code PUT  /reports/:id} : Updates an existing report.
      *
-     * @param id the id of the report to save.
-     * @param report the report to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated report,
-     * or with status {@code 400 (Bad Request)} if the report is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the report couldn't be updated.
+     * @param id the id of the reportDTO to save.
+     * @param reportDTO the reportDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated reportDTO,
+     * or with status {@code 400 (Bad Request)} if the reportDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the reportDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/reports/{id}")
-    public ResponseEntity<Report> updateReport(@PathVariable(value = "id", required = false) final Long id, @RequestBody Report report)
-        throws URISyntaxException {
-        log.debug("REST request to update Report : {}, {}", id, report);
-        if (report.getId() == null) {
+    public ResponseEntity<ReportDTO> updateReport(
+        @PathVariable(value = "id", required = false) final Long id,
+        @RequestBody ReportDTO reportDTO
+    ) throws URISyntaxException {
+        log.debug("REST request to update Report : {}, {}", id, reportDTO);
+        if (reportDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, report.getId())) {
+        if (!Objects.equals(id, reportDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -91,34 +93,34 @@ public class ReportResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Report result = reportService.update(report);
+        ReportDTO result = reportService.update(reportDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, report.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, reportDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /reports/:id} : Partial updates given fields of an existing report, field will ignore if it is null
      *
-     * @param id the id of the report to save.
-     * @param report the report to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated report,
-     * or with status {@code 400 (Bad Request)} if the report is not valid,
-     * or with status {@code 404 (Not Found)} if the report is not found,
-     * or with status {@code 500 (Internal Server Error)} if the report couldn't be updated.
+     * @param id the id of the reportDTO to save.
+     * @param reportDTO the reportDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated reportDTO,
+     * or with status {@code 400 (Bad Request)} if the reportDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the reportDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the reportDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/reports/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Report> partialUpdateReport(
+    public ResponseEntity<ReportDTO> partialUpdateReport(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody Report report
+        @RequestBody ReportDTO reportDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Report partially : {}, {}", id, report);
-        if (report.getId() == null) {
+        log.debug("REST request to partial update Report partially : {}, {}", id, reportDTO);
+        if (reportDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, report.getId())) {
+        if (!Objects.equals(id, reportDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -126,11 +128,11 @@ public class ReportResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Report> result = reportService.partialUpdate(report);
+        Optional<ReportDTO> result = reportService.partialUpdate(reportDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, report.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, reportDTO.getId().toString())
         );
     }
 
@@ -141,9 +143,9 @@ public class ReportResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of reports in body.
      */
     @GetMapping("/reports")
-    public ResponseEntity<List<Report>> getAllReports(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<ReportDTO>> getAllReports(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Reports");
-        Page<Report> page = reportService.findAll(pageable);
+        Page<ReportDTO> page = reportService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -151,20 +153,20 @@ public class ReportResource {
     /**
      * {@code GET  /reports/:id} : get the "id" report.
      *
-     * @param id the id of the report to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the report, or with status {@code 404 (Not Found)}.
+     * @param id the id of the reportDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the reportDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/reports/{id}")
-    public ResponseEntity<Report> getReport(@PathVariable Long id) {
+    public ResponseEntity<ReportDTO> getReport(@PathVariable Long id) {
         log.debug("REST request to get Report : {}", id);
-        Optional<Report> report = reportService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(report);
+        Optional<ReportDTO> reportDTO = reportService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(reportDTO);
     }
 
     /**
      * {@code DELETE  /reports/:id} : delete the "id" report.
      *
-     * @param id the id of the report to delete.
+     * @param id the id of the reportDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/reports/{id}")

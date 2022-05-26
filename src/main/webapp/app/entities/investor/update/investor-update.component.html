@@ -141,6 +141,23 @@
             />
           </div>
         </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="microApp.investor.portfolio" for="field_portfolio">Portfolio</label>
+          <select class="form-control" id="field_portfolio" data-cy="portfolio" name="portfolio" formControlName="portfolio">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                investorPortfolioOption.id === editForm.get('portfolio')!.value?.id
+                  ? editForm.get('portfolio')!.value
+                  : investorPortfolioOption
+              "
+              *ngFor="let investorPortfolioOption of portfoliosCollection; trackBy: trackInvestorPortfolioById"
+            >
+              {{ investorPortfolioOption.id }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <div>

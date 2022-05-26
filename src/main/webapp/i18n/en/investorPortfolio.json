@@ -1,0 +1,25 @@
+{
+  "microApp": {
+    "investorPortfolio": {
+      "home": {
+        "title": "Investor Portfolios",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Investor Portfolio",
+        "createOrEditLabel": "Create or edit a Investor Portfolio",
+        "notFound": "No Investor Portfolios found"
+      },
+      "created": "A new Investor Portfolio is created with identifier {{ param }}",
+      "updated": "A Investor Portfolio is updated with identifier {{ param }}",
+      "deleted": "A Investor Portfolio is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Investor Portfolio {{ id }}?"
+      },
+      "detail": {
+        "title": "Investor Portfolio"
+      },
+      "id": "ID",
+      "units": "Units",
+      "investor": "Investor"
+    }
+  }
+}

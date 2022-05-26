@@ -1,7 +1,7 @@
 {
   "applications": ["micro"],
   "changelogDate": "20220522133922",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "transaction",
   "fields": [

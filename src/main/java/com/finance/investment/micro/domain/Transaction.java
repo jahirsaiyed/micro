@@ -1,5 +1,6 @@
 package com.finance.investment.micro.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.finance.investment.micro.domain.enumeration.TransactionType;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -35,6 +36,7 @@ public class Transaction implements Serializable {
     @Column(name = "type")
     private TransactionType type;
 
+    @JsonIgnoreProperties(value = { "portfolio" }, allowSetters = true)
     @OneToOne(optional = false)
     @NotNull
     @JoinColumn(unique = true)

@@ -1,0 +1,32 @@
+{
+  "applications": ["micro"],
+  "changelogDate": "20220522161247",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "master_details",
+  "fields": [
+    {
+      "fieldName": "balance",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "totalUnits",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "aum",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "MasterDetails",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceClass"
+}
