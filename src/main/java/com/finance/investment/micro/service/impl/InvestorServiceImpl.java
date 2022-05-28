@@ -8,14 +8,12 @@ import com.finance.investment.micro.service.mapper.InvestorMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Service Implementation for managing {@link Investor}.
- */
 @Service
 @Transactional
 public class InvestorServiceImpl implements InvestorService {
@@ -26,13 +24,23 @@ public class InvestorServiceImpl implements InvestorService {
 
     private final InvestorMapper investorMapper;
 
-    public InvestorServiceImpl(InvestorRepository investorRepository, InvestorMapper investorMapper) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    public InvestorServiceImpl(InvestorRepository investorRepository, InvestorMapper investorMapper, ApplicationEventPublisher eventPublisher) {
         this.investorRepository = investorRepository;
         this.investorMapper = investorMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
-    public InvestorDTO save(InvestorDTO investorDTO) {
+    public InvestorDTO create(InvestorDTO investorDTO) {
+        log.debug("Request to save Investor : {}", investorDTO);
+        InvestorDTO saved = save(investorDTO);
+        eventPublisher.publishEvent(saved);
+        return saved;
+    }
+
+    private InvestorDTO save(InvestorDTO investorDTO) {
         log.debug("Request to save Investor : {}", investorDTO);
         Investor investor = investorMapper.toEntity(investorDTO);
         investor = investorRepository.save(investor);
@@ -42,9 +50,7 @@ public class InvestorServiceImpl implements InvestorService {
     @Override
     public InvestorDTO update(InvestorDTO investorDTO) {
         log.debug("Request to save Investor : {}", investorDTO);
-        Investor investor = investorMapper.toEntity(investorDTO);
-        investor = investorRepository.save(investor);
-        return investorMapper.toDto(investor);
+        return save(investorDTO);
     }
 
     @Override

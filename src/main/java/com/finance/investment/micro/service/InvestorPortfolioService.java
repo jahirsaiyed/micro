@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Interface for managing {@link com.finance.investment.micro.domain.InvestorPortfolio}.
@@ -55,6 +56,9 @@ public interface InvestorPortfolioService {
      * @return the entity.
      */
     Optional<InvestorPortfolioDTO> findOne(Long id);
+
+    @Transactional(readOnly = true)
+    Optional<InvestorPortfolioDTO> findByInvestorId(Long id);
 
     /**
      * Delete the "id" investorPortfolio.

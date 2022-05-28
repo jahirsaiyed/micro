@@ -8,6 +8,7 @@ import com.finance.investment.micro.service.mapper.ReportMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,12 @@ public class ReportServiceImpl implements ReportService {
 
     private final ReportMapper reportMapper;
 
-    public ReportServiceImpl(ReportRepository reportRepository, ReportMapper reportMapper) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    public ReportServiceImpl(ReportRepository reportRepository, ReportMapper reportMapper, ApplicationEventPublisher eventPublisher) {
         this.reportRepository = reportRepository;
         this.reportMapper = reportMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -36,15 +40,14 @@ public class ReportServiceImpl implements ReportService {
         log.debug("Request to save Report : {}", reportDTO);
         Report report = reportMapper.toEntity(reportDTO);
         report = reportRepository.save(report);
-        return reportMapper.toDto(report);
+        reportDTO = reportMapper.toDto(report);
+        eventPublisher.publishEvent(reportDTO);
+        return reportDTO;
     }
 
     @Override
     public ReportDTO update(ReportDTO reportDTO) {
-        log.debug("Request to save Report : {}", reportDTO);
-        Report report = reportMapper.toEntity(reportDTO);
-        report = reportRepository.save(report);
-        return reportMapper.toDto(report);
+        return save(reportDTO);
     }
 
     @Override

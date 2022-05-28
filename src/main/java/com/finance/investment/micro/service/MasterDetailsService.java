@@ -2,8 +2,11 @@ package com.finance.investment.micro.service;
 
 import com.finance.investment.micro.service.dto.MasterDetailsDTO;
 import java.util.Optional;
+
+import com.finance.investment.micro.service.dto.TransactionDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Interface for managing {@link com.finance.investment.micro.domain.MasterDetails}.
@@ -55,4 +58,9 @@ public interface MasterDetailsService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    @Transactional(readOnly = true)
+    Optional<MasterDetailsDTO> find();
+
+    Optional<MasterDetailsDTO> updateMasterDetails(TransactionDTO transactionDTO);
 }

@@ -98,6 +98,13 @@ public class InvestorPortfolioServiceImpl implements InvestorPortfolioService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<InvestorPortfolioDTO> findByInvestorId(Long id) {
+        log.debug("Request to get InvestorPortfolio : investor id {}", id);
+        return investorPortfolioRepository.findByInvestor_Id(id).map(investorPortfolioMapper::toDto);
+    }
+
+    @Override
     public void delete(Long id) {
         log.debug("Request to delete InvestorPortfolio : {}", id);
         investorPortfolioRepository.deleteById(id);

@@ -15,7 +15,7 @@ public interface InvestorService {
      * @param investorDTO the entity to save.
      * @return the persisted entity.
      */
-    InvestorDTO save(InvestorDTO investorDTO);
+    InvestorDTO create(InvestorDTO investorDTO);
 
     /**
      * Updates a investor.

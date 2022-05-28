@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -61,7 +60,7 @@ public class InvestorResource {
         if (investorDTO.getId() != null) {
             throw new BadRequestAlertException("A new investor cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        InvestorDTO result = investorService.save(investorDTO);
+        InvestorDTO result = investorService.create(investorDTO);
         return ResponseEntity
             .created(new URI("/api/investors/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

@@ -8,6 +8,7 @@ import com.finance.investment.micro.service.mapper.TransactionMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionMapper transactionMapper;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionMapper transactionMapper, ApplicationEventPublisher eventPublisher) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -36,15 +40,14 @@ public class TransactionServiceImpl implements TransactionService {
         log.debug("Request to save Transaction : {}", transactionDTO);
         Transaction transaction = transactionMapper.toEntity(transactionDTO);
         transaction = transactionRepository.save(transaction);
-        return transactionMapper.toDto(transaction);
+        transactionDTO = transactionMapper.toDto(transaction);
+        eventPublisher.publishEvent(transactionDTO);
+        return transactionDTO;
     }
 
     @Override
     public TransactionDTO update(TransactionDTO transactionDTO) {
-        log.debug("Request to save Transaction : {}", transactionDTO);
-        Transaction transaction = transactionMapper.toEntity(transactionDTO);
-        transaction = transactionRepository.save(transaction);
-        return transactionMapper.toDto(transaction);
+        return save(transactionDTO);
     }
 
     @Override
