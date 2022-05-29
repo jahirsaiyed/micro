@@ -25,6 +25,9 @@ public class InvestorPortfolio implements Serializable {
     @Column(name = "units", precision = 21, scale = 2)
     private BigDecimal units;
 
+    @Column(name = "investments", precision = 21, scale = 2)
+    private BigDecimal investments;
+
     @JsonIgnoreProperties(value = { "portfolio" }, allowSetters = true)
     @OneToOne(mappedBy = "portfolio")
     private Investor investor;
@@ -76,7 +79,19 @@ public class InvestorPortfolio implements Serializable {
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public BigDecimal getInvestments() {
+        return investments;
+    }
+
+    public void setInvestments(BigDecimal investments) {
+        this.investments = investments;
+    }
+
+    public InvestorPortfolio investments(BigDecimal investments) {
+        this.setInvestments(investments);
+        return this;
+    }
+// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {

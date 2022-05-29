@@ -61,6 +61,4 @@ public interface MasterDetailsService {
 
     @Transactional(readOnly = true)
     Optional<MasterDetailsDTO> find();
-
-    Optional<MasterDetailsDTO> updateMasterDetails(TransactionDTO transactionDTO);
 }

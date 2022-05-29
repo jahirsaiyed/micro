@@ -14,9 +14,8 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="units" type="decimal(21,2)">
-                <constraints nullable="true" />
-            </column>
+            <column name="units" type="decimal(21,2)" defaultOnNull="0"/>
+            <column name="investments" type="decimal(21,2)" defaultOnNull="0"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>

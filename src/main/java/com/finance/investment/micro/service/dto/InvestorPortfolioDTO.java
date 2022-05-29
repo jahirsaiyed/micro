@@ -13,6 +13,8 @@ public class InvestorPortfolioDTO implements Serializable {
 
     private BigDecimal units;
 
+    private BigDecimal investments;
+
     public Long getId() {
         return id;
     }
@@ -29,33 +31,33 @@ public class InvestorPortfolioDTO implements Serializable {
         this.units = units;
     }
 
+    public BigDecimal getInvestments() {
+        return investments == null ? BigDecimal.ZERO : investments;
+    }
+
+    public void setInvestments(BigDecimal investments) {
+        this.investments = investments;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof InvestorPortfolioDTO)) {
-            return false;
-        }
-
-        InvestorPortfolioDTO investorPortfolioDTO = (InvestorPortfolioDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, investorPortfolioDTO.id);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InvestorPortfolioDTO that = (InvestorPortfolioDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(units, that.units) && Objects.equals(investments, that.investments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(id, units, investments);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "InvestorPortfolioDTO{" +
-            "id=" + getId() +
-            ", units=" + getUnits() +
-            "}";
+            "id=" + id +
+            ", units=" + units +
+            ", investments=" + investments +
+            '}';
     }
 }

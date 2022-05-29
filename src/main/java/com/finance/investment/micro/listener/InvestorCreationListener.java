@@ -28,6 +28,7 @@ public class InvestorCreationListener {
     public void handleInvestorEvent(InvestorDTO investorDTO) {
         InvestorPortfolioDTO portfolioDTO = new InvestorPortfolioDTO();
         portfolioDTO.setUnits(BigDecimal.ZERO);
+        portfolioDTO.setInvestments(BigDecimal.ZERO);
 
         investorService.findOne(investorDTO.getId())
             .map(i -> {
